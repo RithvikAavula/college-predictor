@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EAMCET College Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>EAMCET College Predictor</h1>
+
+    <input type="number" id="rank" placeholder="Enter your EAMCET Rank" min="1" required />
+
+    <select id="category">
+      <option value="OC">OC</option>
+      <option value="BC_A">BC-A</option>
+      <option value="BC_B">BC-B</option>
+      <option value="BC_C">BC-C</option>
+      <option value="BC_D">BC-D</option>
+      <option value="BC_E">BC-E</option>
+      <option value="SC">SC</option>
+      <option value="ST">ST</option>
+      <option value="EWS_GEN_OU">EWS General</option>
+    </select>
+
+    <select id="gender">
+      <option value="MALE">Male</option>
+      <option value="FEMALE">Female</option>
+    </select>
+
+    <select id="branch">
+      <option value="">All Branches</option>
+      <option value="CSE">CSE</option>
+      <option value="ECE">ECE</option>
+      <option value="IT">IT</option>
+      <option value="EEE">EEE</option>
+      <option value="MECH">MECH</option>
+      <option value="CIVIL">CIVIL</option>
+      <!-- Add more branches if needed -->
+    </select>
+
+    <button onclick="predict()">Predict</button>
+    <button onclick="downloadPDF()">Download PDF</button>
+
+    <div id="results"></div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
