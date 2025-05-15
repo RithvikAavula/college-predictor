@@ -29,14 +29,28 @@ def get_cutoff_data(inst_code, branch):
     result = df[(df['INST_CODE'] == inst_code) & (df['BRANCH'] == branch)]
     return jsonify(result.to_dict(orient='records'))
 
-# Search by rank and category (with optional branch filter)
+# ✅ UPDATED: Search by rank and category with alias support
 @app.route('/search', methods=['GET'])
 def search_by_rank():
     category = request.args.get('category')  # e.g., 'OC_BOYS'
     rank = request.args.get('rank')
-    branch = request.args.get('branch', '').upper()
+    user_branch = request.args.get('branch', '').upper()
 
-    # Basic validation
+    # Mapping common names to actual BRANCH codes from your dataset
+    branch_aliases = {
+        "CSE": ["CSE"],
+        "IT": ["INF", "IT"],
+        "CSM": ["CSM"],
+        "CSD": ["CSDA", "CSD"],
+        "CSC": ["CSC"],
+        "CSB": ["CSB"],
+        "CSO": ["CSO"],
+        "ECE": ["ECE"],
+        "EEE": ["EEE"],
+        "CIVIL": ["CIV", "CIVIL"],
+        "MECH": ["MEC", "MECH"]
+    }
+
     if not category or not rank:
         return jsonify({"error": "Please provide 'category' and 'rank' parameters."}), 400
 
@@ -48,11 +62,12 @@ def search_by_rank():
     if category not in df.columns:
         return jsonify({"error": f"Category '{category}' not found in data columns."}), 400
 
-    filtered = df[df[category].notna()]  # Filter out missing ranks
+    filtered = df[df[category].notna()]
     filtered = filtered[filtered[category] >= rank]
 
-    if branch:
-        filtered = filtered[filtered['BRANCH'].str.upper() == branch]
+    if user_branch:
+        branch_codes = branch_aliases.get(user_branch, [user_branch])
+        filtered = filtered[filtered['BRANCH'].str.upper().isin(branch_codes)]
 
     filtered = filtered.sort_values(by=category)
 
