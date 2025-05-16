@@ -9,7 +9,7 @@ async function predict() {
     return;
   }
 
-  const genderSuffix = gender === "MALE" ? "_BOYS" : "_GIRLS";
+  const genderSuffix = gender.toUpperCase() === "MALE" ? "_BOYS" : "_GIRLS";
   const category = categoryBase + genderSuffix;
 
   let url = `/search?rank=${rank}&category=${category}`;
