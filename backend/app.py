@@ -15,19 +15,19 @@ def index():
 @app.route('/colleges', methods=['GET'])
 def get_all_colleges():
     colleges = df[['INST_CODE', 'INSTITUTE_NAME', 'PLACE', 'DIST']].drop_duplicates()
-    return jsonify(colleges.to_dict(orient='records'))
+    return jsonify(colleges.where(pd.notnull(colleges), None).to_dict(orient='records'))
 
 # Route to get all branches of a particular college
 @app.route('/branches/<inst_code>', methods=['GET'])
 def get_college_branches(inst_code):
     branches = df[df['INST_CODE'] == inst_code][['BRANCH', 'BRANCH_NAME']].drop_duplicates()
-    return jsonify(branches.to_dict(orient='records'))
+    return jsonify(branches.where(pd.notnull(branches), None).to_dict(orient='records'))
 
 # Route to get cutoff ranks for a specific branch in a specific college
 @app.route('/cutoff/<inst_code>/<branch>', methods=['GET'])
 def get_cutoff_data(inst_code, branch):
     result = df[(df['INST_CODE'] == inst_code) & (df['BRANCH'] == branch)]
-    return jsonify(result.to_dict(orient='records'))
+    return jsonify(result.where(pd.notnull(result), None).to_dict(orient='records'))
 
 # ✅ UPDATED: Search by rank and category with alias support
 @app.route('/search', methods=['GET'])
@@ -71,7 +71,7 @@ def search_by_rank():
 
     filtered = filtered.sort_values(by=category)
 
-    return jsonify(filtered.to_dict(orient='records'))
+    return jsonify(filtered.where(pd.notnull(filtered), None).to_dict(orient='records'))
 
 if __name__ == '__main__':
     app.run(debug=True)
