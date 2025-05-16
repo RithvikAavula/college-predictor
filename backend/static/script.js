@@ -1,7 +1,7 @@
 async function predict() {
   const rank = document.getElementById("rank").value;
   const categoryBase = document.getElementById("category").value;  // e.g., "OC"
-  const gender = document.getElementById("gender").value;         // "MALE" or "FEMALE"
+  const gender = document.getElementById("gender").value;          // "MALE" or "FEMALE"
   const branch = document.getElementById("branch").value;
 
   if (!rank || rank < 1) {
@@ -16,10 +16,15 @@ async function predict() {
   if (branch) url += `&branch=${branch.toUpperCase()}`;
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(window.location.origin + url); // ✅ Ensures correct absolute URL
     if (!response.ok) {
-      const errorData = await response.json();
-      alert(errorData.error || "Error fetching data");
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        alert(errorData.error || "Error fetching data");
+      } else {
+        alert("Unexpected server error. Please try again later.");
+      }
       return;
     }
     const data = await response.json();
