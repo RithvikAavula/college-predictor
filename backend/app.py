@@ -71,7 +71,8 @@ def search_by_rank():
 
     filtered = filtered.sort_values(by=category)
 
-    return jsonify(filtered.to_dict(orient='records'))
+    return jsonify(filtered.fillna(value=None).to_dict(orient='records'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
