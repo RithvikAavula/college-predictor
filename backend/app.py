@@ -69,7 +69,7 @@ def search_by_rank():
         branch_codes = branch_aliases.get(user_branch, [user_branch])
         filtered = filtered[filtered['BRANCH'].str.upper().isin(branch_codes)]
 
-    filtered = filtered.where(pd.notna(filtered), None)
+    filtered = filtered.sort_values(by=category)
 
     return jsonify(filtered.to_dict(orient='records'))
 
